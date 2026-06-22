@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  background: #eef5ff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  background:
+    radial-gradient(circle at top left, rgba(59, 130, 246, 0.16), transparent 34rem),
+    linear-gradient(135deg, #f8fbff 0%, #edf5ff 46%, #e7eef8 100%);
+  color: #0f172a;
+}
+
+button,
+textarea,
+input {
+  font: inherit;
+}
+
+.pixelated {
+  image-rendering: pixelated;
+}
+
+.pixel-map {
+  background-color: #9bb3c9;
+  background-image:
+    linear-gradient(rgba(20, 31, 48, 0.12) 2px, transparent 2px),
+    linear-gradient(90deg, rgba(20, 31, 48, 0.12) 2px, transparent 2px),
+    linear-gradient(#a9bed2 50%, #93abc2 50%);
+  background-position: 0 0, 0 0, 0 0;
+  background-size: 32px 32px, 32px 32px, 64px 64px;
+}
+
+.pixel-button {
+  border: 3px solid #111827;
+  box-shadow: 0 4px 0 #111827;
+  transform: translateY(0);
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease,
+    filter 120ms ease;
+}
+
+.pixel-button:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+  box-shadow: 0 5px 0 #111827;
+}
+
+.pixel-button:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #111827;
+}
+
+.pixel-panel {
+  border: 4px solid #111827;
+  box-shadow: 0 5px 0 #111827;
+}
