@@ -1,28 +1,40 @@
 "use client";
 
 import { useState } from "react";
-import type { QuizQuestion } from "@/types";
+import type { QuizAnswerResult, QuizQuestion, QuizResult } from "@/types";
 
 type SpellingQuizProps = {
   questions: QuizQuestion[];
+  onComplete: (result: QuizResult) => void;
   onClose: () => void;
 };
 
-export function SpellingQuiz({ onClose, questions }: SpellingQuizProps) {
+export function SpellingQuiz({ onClose, onComplete, questions }: SpellingQuizProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answer, setAnswer] = useState("");
   const [feedback, setFeedback] = useState<"correct" | "incorrect" | null>(null);
   const [score, setScore] = useState(0);
   const [finished, setFinished] = useState(false);
+  const [answers, setAnswers] = useState<QuizAnswerResult[]>([]);
 
   const currentQuestion = questions[currentIndex];
+  const mistakes = answers.filter((item) => !item.correct).map((item) => item.answer);
 
   function handleCheck() {
     if (!currentQuestion || feedback) {
       return;
     }
 
-    const isCorrect = answer.trim().toLowerCase() === currentQuestion.answer.toLowerCase();
+    const userAnswer = answer.trim();
+    const isCorrect = userAnswer.toLowerCase() === currentQuestion.answer.toLowerCase();
+    const result: QuizAnswerResult = {
+      prompt: currentQuestion.prompt,
+      answer: currentQuestion.answer,
+      userAnswer,
+      correct: isCorrect,
+    };
+
+    setAnswers((items) => [...items, result]);
     setFeedback(isCorrect ? "correct" : "incorrect");
     if (isCorrect) {
       setScore((value) => value + 1);
@@ -31,6 +43,14 @@ export function SpellingQuiz({ onClose, questions }: SpellingQuizProps) {
 
   function handleNext() {
     if (currentIndex === questions.length - 1) {
+      const finalAnswers = answers;
+      const finalScore = finalAnswers.filter((item) => item.correct).length;
+      onComplete({
+        score: finalScore,
+        total: questions.length,
+        answers: finalAnswers,
+        mistakes: finalAnswers.filter((item) => !item.correct).map((item) => item.answer),
+      });
       setFinished(true);
       return;
     }
@@ -38,6 +58,15 @@ export function SpellingQuiz({ onClose, questions }: SpellingQuizProps) {
     setCurrentIndex((index) => index + 1);
     setAnswer("");
     setFeedback(null);
+  }
+
+  function handleRestart() {
+    setCurrentIndex(0);
+    setAnswer("");
+    setFeedback(null);
+    setScore(0);
+    setFinished(false);
+    setAnswers([]);
   }
 
   return (
@@ -63,6 +92,26 @@ export function SpellingQuiz({ onClose, questions }: SpellingQuizProps) {
               <p className="text-sm text-slate-500">Final Score</p>
               <p className="mt-2 text-4xl font-bold text-blue-700">{score}/{questions.length}</p>
             </div>
+            <div className="border-4 border-slate-950 bg-white p-4">
+              <p className="mb-2 text-sm font-bold">Review Report</p>
+              {mistakes.length > 0 ? (
+                <div className="space-y-2 text-xs leading-5">
+                  <p className="text-red-700">Wrong words: {mistakes.join(", ")}</p>
+                  <p className="text-slate-600">Recommended review: {mistakes.slice(0, 3).join(", ")}</p>
+                </div>
+              ) : (
+                <p className="text-xs leading-5 text-emerald-700">
+                  All correct. These words are now marked as mastered.
+                </p>
+              )}
+            </div>
+            <button
+              type="button"
+              onClick={handleRestart}
+              className="pixel-button w-full bg-yellow-300 px-4 py-3 text-sm font-bold text-slate-950"
+            >
+              再练一次
+            </button>
             <button
               type="button"
               onClick={onClose}

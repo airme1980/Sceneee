@@ -30,6 +30,9 @@ export function WordInputPanel({
         <div>
           <h1 className="text-3xl font-bold tracking-normal text-slate-950">Word Scene Trainer</h1>
           <p className="mt-2 text-sm text-slate-500">输入单词 → 生成场景 → 游戏练习</p>
+          <p className="mt-3 rounded-2xl bg-blue-50 px-3 py-3 text-xs leading-5 text-blue-900">
+            把目标词绑定到 NPC、物品和任务里，像探索 RPG 地图一样完成一次短练习。
+          </p>
         </div>
       </header>
 

@@ -6,12 +6,37 @@ type PixelNpcProps = {
   color: string;
   x: string;
   y: string;
+  explored?: boolean;
+  transitionMs?: number;
   onClick?: () => void;
 };
 
-export function PixelNpc({ color, name, onClick, role, x, y }: PixelNpcProps) {
+export function PixelNpc({
+  color,
+  explored = false,
+  name,
+  onClick,
+  role,
+  transitionMs,
+  x,
+  y,
+}: PixelNpcProps) {
   const content = (
     <>
+      {onClick ? (
+        <span
+          className={`absolute top-8 h-20 w-20 rounded-full border-4 ${
+            explored
+              ? "border-emerald-300 bg-emerald-300/15"
+              : "animate-pulse border-yellow-200 bg-yellow-200/20"
+          }`}
+        />
+      ) : null}
+      {explored ? (
+        <span className="absolute -right-3 top-6 z-30 grid h-6 w-6 place-items-center border-2 border-slate-950 bg-emerald-400 font-pixel text-[10px] font-bold text-slate-950">
+          ✓
+        </span>
+      ) : null}
       <span className="absolute -top-8 left-1/2 hidden -translate-x-1/2 whitespace-nowrap border-2 border-slate-950 bg-white px-2 py-1 font-pixel text-[10px] font-bold text-slate-950 group-hover:block">
         {name}
       </span>
@@ -40,7 +65,11 @@ export function PixelNpc({ color, name, onClick, role, x, y }: PixelNpcProps) {
         aria-label={`Talk to ${name}`}
         onClick={onClick}
         className={`${className} cursor-pointer transition hover:-translate-y-[54%]`}
-        style={{ left: x, top: y }}
+        style={{
+          left: x,
+          top: y,
+          transition: transitionMs ? `left ${transitionMs}ms linear, top ${transitionMs}ms linear` : undefined,
+        }}
       >
         {content}
       </button>
@@ -48,7 +77,14 @@ export function PixelNpc({ color, name, onClick, role, x, y }: PixelNpcProps) {
   }
 
   return (
-    <div className={className} style={{ left: x, top: y }}>
+    <div
+      className={className}
+      style={{
+        left: x,
+        top: y,
+        transition: transitionMs ? `left ${transitionMs}ms linear, top ${transitionMs}ms linear` : undefined,
+      }}
+    >
       {content}
     </div>
   );

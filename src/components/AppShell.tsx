@@ -11,30 +11,41 @@ import {
   createSceneRecord,
   parseWords,
 } from "@/lib/mockScene";
-import type { SceneRecord } from "@/types";
+import type { SceneProgress, SceneRecord } from "@/types";
 
-const STORAGE_KEY = "word-scene-trainer:recent-scenes";
+const RECORDS_STORAGE_KEY = "word-scene-trainer:recent-scenes";
+const PROGRESS_STORAGE_KEY = "word-scene-trainer:scene-progress";
 
 export function AppShell() {
   const [wordInput, setWordInput] = useState(DEFAULT_WORDS.join("\n"));
   const [goal, setGoal] = useState("工作英语");
   const [difficulty, setDifficulty] = useState("普通");
   const [storedRecords, setStoredRecords] = useState<SceneRecord[]>([]);
+  const [progressByRecord, setProgressByRecord] = useState<Record<string, SceneProgress>>({});
   const [storageReady, setStorageReady] = useState(false);
   const [activeRecord, setActiveRecord] = useState<SceneRecord>(DEFAULT_SCENE_RECORD);
   const [sceneResetKey, setSceneResetKey] = useState(0);
 
   useEffect(() => {
     try {
-      const raw = window.localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw) as SceneRecord[];
-        if (Array.isArray(parsed)) {
-          setStoredRecords(parsed.filter((record) => record?.id && Array.isArray(record.words)));
+      const rawRecords = window.localStorage.getItem(RECORDS_STORAGE_KEY);
+      if (rawRecords) {
+        const parsedRecords = JSON.parse(rawRecords) as SceneRecord[];
+        if (Array.isArray(parsedRecords)) {
+          setStoredRecords(parsedRecords.filter((record) => record?.id && Array.isArray(record.words)));
+        }
+      }
+
+      const rawProgress = window.localStorage.getItem(PROGRESS_STORAGE_KEY);
+      if (rawProgress) {
+        const parsedProgress = JSON.parse(rawProgress) as Record<string, SceneProgress>;
+        if (parsedProgress && typeof parsedProgress === "object") {
+          setProgressByRecord(parsedProgress);
         }
       }
     } catch {
       setStoredRecords([]);
+      setProgressByRecord({});
     } finally {
       setStorageReady(true);
     }
@@ -45,8 +56,16 @@ export function AppShell() {
       return;
     }
 
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(storedRecords.slice(0, 6)));
+    window.localStorage.setItem(RECORDS_STORAGE_KEY, JSON.stringify(storedRecords.slice(0, 6)));
   }, [storageReady, storedRecords]);
+
+  useEffect(() => {
+    if (!storageReady) {
+      return;
+    }
+
+    window.localStorage.setItem(PROGRESS_STORAGE_KEY, JSON.stringify(progressByRecord));
+  }, [storageReady, progressByRecord]);
 
   const historyRecords = useMemo(() => {
     const userIds = new Set(storedRecords.map((record) => record.id));
@@ -88,12 +107,20 @@ export function AppShell() {
           />
           <HistoryList
             activeRecordId={activeRecord.id}
+            progressByRecord={progressByRecord}
             records={historyRecords}
             onSelectRecord={handleSelectRecord}
           />
         </aside>
 
         <PixelGameScene
+          initialProgress={progressByRecord[activeRecord.id]}
+          onProgressChange={(progress) =>
+            setProgressByRecord((current) => ({
+              ...current,
+              [activeRecord.id]: progress,
+            }))
+          }
           record={activeRecord}
           resetKey={sceneResetKey}
         />
