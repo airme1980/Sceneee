@@ -101,3 +101,103 @@ export type QuizResult = {
   answers: QuizAnswerResult[];
   mistakes: string[];
 };
+
+export type GridPosition = {
+  x: number;
+  y: number;
+};
+
+export type GridTileType = "floor" | "wall" | "table" | "chair" | "decor";
+
+export type GridTile = {
+  type: GridTileType;
+  walkable: boolean;
+};
+
+export type CharacterSpriteId =
+  | "manager_blue"
+  | "coworker_green"
+  | "client_purple"
+  | "staff_red"
+  | "traveler_yellow"
+  | "barista_brown"
+  | "doctor_teal"
+  | "student_orange"
+  | "guard_gray"
+  | "robot_silver";
+
+export type ObjectSpriteId =
+  | "urgent_notice"
+  | "whiteboard"
+  | "calendar"
+  | "laptop"
+  | "phone"
+  | "door"
+  | "coffee_machine"
+  | "suitcase"
+  | "ticket_screen"
+  | "menu_board"
+  | "plant"
+  | "file_box"
+  | "desk_lamp"
+  | "book_stack"
+  | "projector";
+
+export type CharacterSprite = {
+  id: CharacterSpriteId;
+  label: string;
+  color: string;
+  roles: string[];
+};
+
+export type ObjectSprite = {
+  id: ObjectSpriteId;
+  label: string;
+  symbol: string;
+  color: string;
+  themes: string[];
+};
+
+export type GridNpc = {
+  id: string;
+  spriteId: CharacterSpriteId;
+  name: string;
+  role: string;
+  position: GridPosition;
+  patrol?: GridPosition[];
+  dialogue: string;
+  words: string[];
+  taskIds: string[];
+};
+
+export type GridObject = {
+  id: string;
+  spriteId: ObjectSpriteId;
+  label: string;
+  position: GridPosition;
+  inspectText: string;
+  words: string[];
+  taskIds: string[];
+  blocksMovement: boolean;
+  requiredWords?: string[];
+  missionClear?: boolean;
+};
+
+export type GridMission = {
+  id: string;
+  title: string;
+  theme: "office" | "airport" | "cafe";
+  mission: string;
+  intro: string;
+  startGoal: string;
+  taskHints: Record<string, string>;
+  finalHint: string;
+  mapTemplateId: string;
+  targetWords: string[];
+  playerStart: GridPosition;
+  npcs: GridNpc[];
+  objects: GridObject[];
+  tasks: TaskSpec[];
+  quiz: QuizQuestion[];
+  rewardBadge: string;
+};

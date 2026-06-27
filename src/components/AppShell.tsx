@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { GridGameScene } from "@/components/GridGameScene";
 import { HistoryList } from "@/components/HistoryList";
-import { PixelGameScene } from "@/components/PixelGameScene";
 import { WordInputPanel } from "@/components/WordInputPanel";
 import {
   DEFAULT_SCENE_RECORD,
@@ -113,7 +113,7 @@ export function AppShell() {
           />
         </aside>
 
-        <PixelGameScene
+        <GridGameScene
           initialProgress={progressByRecord[activeRecord.id]}
           onProgressChange={(progress) =>
             setProgressByRecord((current) => ({

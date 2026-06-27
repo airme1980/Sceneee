@@ -4,16 +4,20 @@
 
 ## 当前版本
 
-v0.3 prototype
+v0.4 grid demo
 
 ## 功能
 
 - Next.js + TypeScript + Tailwind CSS
 - 左侧现代控制台 UI，支持输入单词、选择学习目标和难度
 - 右侧 HTML/CSS/React 模拟 2D 像素 RPG 场景
-- NPC / 物品点击互动，目标词高亮
-- 点击目标后，玩家会自动走到 NPC / 物品前方再触发对话
-- 对话气泡显示在 NPC / 物品上方，底部保留完整高亮对话
+- 20x20 固定方格地图 demo
+- 固定 10 个角色素材和一组像素道具素材
+- mock AI 关卡配置会根据词表生成 NPC、物品、任务和故事文本
+- 玩家支持方向键 / WASD / D-pad 一格一格移动
+- NPC 会在小范围内巡逻
+- 站到 NPC 或物品旁边后可以互动并推进剧情
+- NPC / 物品相邻互动，目标词高亮
 - WORDS 面板支持 `new / seen / mastered` 三种学习状态
 - Tasks 面板自动更新任务完成状态
 - 完成 3 个任务后解锁拼写练习
@@ -47,7 +51,7 @@ npm run build
 
 ## 后续方向
 
-- 增加 Airport Check-in、Cafe Order、Hotel Reception 等多场景模板
+- 增加 Airport Check-in、Cafe Order、Hotel Reception 等 20x20 地图模板
 - 让 AI 只生成结构化 `SceneSpec` JSON，前端统一渲染
 - 增加复习队列、错词本和学习报告
 - 支持键盘移动、碰撞和简单网格寻路
